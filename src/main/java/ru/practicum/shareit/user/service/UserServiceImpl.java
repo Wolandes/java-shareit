@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long id, UserUpdateDto updateUser) {
-        UserDto UserDto = findById(id);
+        UserDto userDto = findById(id);
         User user = userMapper.toUserFromUserUpdateDto(updateUser);
         if (updateUser.getName() == null) {
             user.setName((updateUser.getName()));
@@ -67,9 +67,9 @@ public class UserServiceImpl implements UserService {
         }
         user.setId(id);
         userRepository.saveUser(user);
-        UserDto = userMapper.toUserDto(user);
+        userDto = userMapper.toUserDto(user);
         log.info("Пользователь обновлен");
-        return UserDto;
+        return userDto;
     }
 
     private void checkDoubleEmail(User user) {
