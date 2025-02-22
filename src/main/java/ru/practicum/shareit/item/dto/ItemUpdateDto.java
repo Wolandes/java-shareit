@@ -1,17 +1,12 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @EqualsAndHashCode
-public class Item {
-    long id;
+public class ItemUpdateDto {
     String name;
     String description;
     Boolean available;
-    Long ownerId;
 }
