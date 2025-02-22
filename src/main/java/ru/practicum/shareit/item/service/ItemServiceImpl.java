@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto findById(Long idItem, Long idUser) {
         Item item = itemRepository.findById(idItem).orElseThrow(() -> new NotFoundException("Не найден предмет"));
-        if (item.getOwnerId() != idUser) {
+        if (!Objects.equals(item.getOwnerId(), idUser)) {
             throw new NotFoundException("Владелец  с id " + item.getId() + " не совпадает с пользователем c id" + idUser);
         }
         ItemDto itemDto = itemMapper.toItemDto(item);
@@ -52,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepository.getAllItems();
         List<ItemDto> itemDtos = new ArrayList<>();
         for (Item item : items) {
-            if (idUser == item.getOwnerId()) {
+            if (Objects.equals(idUser, item.getOwnerId())) {
                 itemDtos.add(itemMapper.toItemDto(item));
             }
         }
@@ -95,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> result = new ArrayList<>();
         String lowerText = text.toLowerCase();
         for (Item item : items) {
-            if (item.getOwnerId() == idUser) {
+            if (Objects.equals(item.getOwnerId(), idUser)) {
                 if (item.getAvailable() && item.getName().toLowerCase().contains(lowerText) || item.getDescription().toLowerCase().contains(lowerText)) {
                     result.add(item);
                 }
