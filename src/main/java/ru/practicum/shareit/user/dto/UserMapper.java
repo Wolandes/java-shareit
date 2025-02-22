@@ -9,21 +9,21 @@ import java.util.List;
 @Component
 public class UserMapper {
 
-    public User toUserFromUserCreateDto(UserCreateDto userCreateDto){
+    public User toUserFromUserCreateDto(UserCreateDto userCreateDto) {
         User user = new User();
         user.setName(userCreateDto.getName());
         user.setEmail(userCreateDto.getEmail());
         return user;
     }
 
-    public User toUserFromUserUpdateDto(UserUpdateDto userUpdateDto){
+    public User toUserFromUserUpdateDto(UserUpdateDto userUpdateDto) {
         User user = new User();
         user.setName(userUpdateDto.getName());
         user.setEmail(userUpdateDto.getEmail());
         return user;
     }
 
-    public UserDto toUserDto(User user){
+    public UserDto toUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setName(user.getName());
@@ -31,7 +31,7 @@ public class UserMapper {
         return userDto;
     }
 
-    public List<UserDto> toListUserDto(List<User> users){
+    public List<UserDto> toListUserDto(List<User> users) {
         List<UserDto> usersDto = new ArrayList<>();
         for (User user : users) {
             UserDto UserDto = toUserDto(user);
