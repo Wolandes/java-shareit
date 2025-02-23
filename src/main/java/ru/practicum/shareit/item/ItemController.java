@@ -59,8 +59,9 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable Long id) {
+    public void deleteItem(@RequestHeader("X-Sharer-User-Id") Long idUser,
+                           @PathVariable Long id) {
         log.info("Удаление предмета с id: " + id);
-        itemService.deleteById(id);
+        itemService.deleteById(id, idUser);
     }
 }

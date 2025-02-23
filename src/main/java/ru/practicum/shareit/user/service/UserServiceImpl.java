@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Не найден пользователь"));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Не найден пользователь c id: " + id));
         return userMapper.toUserDto(user);
     }
 
@@ -58,10 +58,10 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = findById(id);
         User user = userMapper.toUserFromUserUpdateDto(updateUser);
         if (updateUser.getName() == null) {
-            user.setName((updateUser.getName()));
+            user.setName((userDto.getName()));
         }
         if (updateUser.getEmail() == null) {
-            user.setEmail(updateUser.getEmail());
+            user.setEmail(userDto.getEmail());
         } else {
             checkDoubleEmail(user);
         }
