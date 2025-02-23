@@ -27,13 +27,13 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> getAllItems(Long idUser) {
-        List<Item> items = new ArrayList<>();
-        for (Item item : items) {
+        List<Item> result = new ArrayList<>();
+        for (Item item : items.values()) {
             if (Objects.equals(idUser, item.getOwnerId())) {
-                items.add(item);
+                result.add(item);
             }
         }
-        return items;
+        return result;
     }
 
     @Override

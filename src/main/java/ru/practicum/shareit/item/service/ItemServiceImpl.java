@@ -33,7 +33,7 @@ public class ItemServiceImpl implements ItemService {
         item.setOwnerId(user.getId());
         item = itemRepository.saveItem(item);
         ItemDto itemDto = itemMapper.toItemDto(item);
-        log.info("Предмет добавлен с id" + itemDto.getId());
+        log.info("Предмет добавлен с id: " + itemDto.getId());
         return itemDto;
     }
 
@@ -54,10 +54,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Long idItem, Long idUser, ItemUpdateDto itemUpdateDto) {
+        Item itemCheckId = checkCreateItem(idItem);
         ItemDto itemDto = findById(idItem, idUser);
         Item item = itemMapper.toItemFromItemUpdateDto(itemUpdateDto);
-        if (!Objects.equals(item.getOwnerId(), idUser)) {
-            throw new NotFoundException("Пользователь с id: " + ".Не совпадает с владельцем предмета с id: " + item.getOwnerId());
+        if (!Objects.equals(itemCheckId.getOwnerId(), idUser)) {
+            throw new NotFoundException("Пользователь с id: " + idUser + ".Не совпадает с владельцем предмета с id: " + itemCheckId.getOwnerId());
         }
         if (item.getName() == null) {
             item.setName(itemDto.getName());
