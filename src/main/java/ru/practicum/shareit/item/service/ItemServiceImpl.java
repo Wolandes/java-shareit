@@ -31,10 +31,9 @@ public class ItemServiceImpl implements ItemService {
         User user = checkCreateUser(idUser);
         Item item = itemMapper.toItemFromItemCreateDto(itemCreateDto);
         item.setOwnerId(user.getId());
-        item = itemRepository.saveItem(item);
-        ItemDto itemDto = itemMapper.toItemDto(item);
-        log.info("Предмет добавлен с id: " + itemDto.getId());
-        return itemDto;
+        item = itemRepository.save(item);
+        log.info("Предмет добавлен с id: " + item.getId());
+        return itemMapper.toItemDto(item);
     }
 
     @Override

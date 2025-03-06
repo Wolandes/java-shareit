@@ -7,13 +7,7 @@ import java.util.Optional;
 
 public interface ItemRepository {
 
-    List<Item> getAllItems(Long idUser);
+    List<Item> findByOwnerId(Long ownerId);
 
-    Optional<Item> findById(Long id);
-
-    Item saveItem(Item item);
-
-    void deleteItemId(Long id);
-
-    List<Item> searchListItems(Long idUser, String text);
+    List<Item> findByNameContainingIgnoreCaseAndAvailableIsTrue(String text);
 }
