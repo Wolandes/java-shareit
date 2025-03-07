@@ -16,8 +16,10 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
+    // Пустая строка между методами
     @Override
     public Booking findById(Long id) {
-        return bookingRepository.findById(id).orElseThrow(() -> new NotFoundException("Бронирование не найдено с id: " + id));
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Бронирование не найдено с id: " + id));
     }
 }
