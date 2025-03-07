@@ -18,6 +18,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking findById(Long id) {
-        return bookingRepository.findById(id).orElseThrow(() -> new NotFoundException("Бронирование не найдено с id: " + id));
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Бронирование не найдено с id: " + id));
     }
 }
