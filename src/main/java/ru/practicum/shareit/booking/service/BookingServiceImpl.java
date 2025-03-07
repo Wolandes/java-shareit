@@ -2,13 +2,14 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.booking.model.*;
+import ru.practicum.shareit.booking.repository.*;
+import ru.practicum.shareit.exception.*;
 
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
+
     private final BookingRepository bookingRepository;
 
     @Override
@@ -16,7 +17,6 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
-    // Пустая строка между методами
     @Override
     public Booking findById(Long id) {
         return bookingRepository.findById(id)
