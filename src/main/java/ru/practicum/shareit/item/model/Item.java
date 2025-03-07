@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.practicum.shareit.user.model.User;
 
 /**
  * TODO Sprint add-controllers.
@@ -28,6 +29,7 @@ public class Item {
     @Column(nullable = false)
     private Boolean available;
 
-    @Column(nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 }

@@ -30,7 +30,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto saveItem(Long idUser, ItemCreateDto itemCreateDto) {
         User user = checkCreateUser(idUser);
         Item item = itemMapper.toItemFromItemCreateDto(itemCreateDto);
-        item.setOwnerId(user.getId());
+        item.setOwner(user);
         item = itemRepository.save(item);
         log.info("Предмет добавлен с id: " + item.getId());
         return itemMapper.toItemDto(item);
@@ -40,15 +40,14 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto findById(Long idItem, Long idUser) {
         checkCreateUser(idUser);
         Item item = checkCreateItem(idItem);
-        ItemDto itemDto = itemMapper.toItemDto(item);
         log.info("Найден предмет с id: " + idItem);
-        return itemDto;
+        return itemMapper.toItemDto(item);
     }
 
     @Override
     public List<ItemDto> getAllItems(Long idUser) {
         checkCreateUser(idUser);
-        return itemMapper.toListItemDto(itemRepository.getAllItems(idUser));
+        return itemMapper.toListItemDto(itemRepository.findAllByOwnerId(idUser));
     }
 
     @Override
