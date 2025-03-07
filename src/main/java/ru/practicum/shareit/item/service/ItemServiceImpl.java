@@ -52,37 +52,33 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Long idItem, Long idUser, ItemUpdateDto itemUpdateDto) {
-        Item itemCheckId = checkCreateItem(idItem);
-        ItemDto itemDto = findById(idItem, idUser);
-        Item item = itemMapper.toItemFromItemUpdateDto(itemUpdateDto);
-        if (!Objects.equals(itemCheckId.getOwnerId(), idUser)) {
-            throw new NotFoundException("Пользователь с id: " + idUser + ".Не совпадает с владельцем предмета с id: " + itemCheckId.getOwnerId());
+        Item item = checkCreateItem(idItem);
+        if (!Objects.equals(item.getOwner().getId(), idUser)) {
+            throw new NotFoundException("Пользователь с id: " + idUser + " не является владельцем предмета с id: " + idItem);
         }
-        if (item.getName() == null) {
-            item.setName(itemDto.getName());
+        if (itemUpdateDto.getName() != null) {
+            item.setName(itemUpdateDto.getName());
         }
-        if (item.getDescription() == null) {
-            item.setDescription(itemDto.getDescription());
+        if (itemUpdateDto.getDescription() != null) {
+            item.setDescription(itemUpdateDto.getDescription());
         }
-        if (item.getAvailable() == null) {
-            item.setAvailable(itemDto.getAvailable());
+        if (itemUpdateDto.getAvailable() != null) {
+            item.setAvailable(itemUpdateDto.getAvailable());
         }
-        item.setId(idItem);
-        item.setOwnerId(idUser);
-        itemRepository.saveItem(item);
-        itemDto = itemMapper.toItemDto(item);
+        item = itemRepository.save(item);
         log.info("Предмет обновлен с id: " + idItem);
-        return itemDto;
+        return itemMapper.toItemDto(item);
     }
 
     @Override
     public void deleteById(Long id, Long idUser) {
         checkCreateUser(idUser);
         Item item = checkCreateItem(id);
-        if (Objects.equals(item.getOwnerId(), idUser)) {
-            throw new ValidationException("Владелец предмета с id: " + item.getOwnerId() + ". Не совпадает пользователем с id: " + idUser);
+        if (!Objects.equals(item.getOwner().getId(), idUser)) {
+            throw new ValidationException("Пользователь с id: " + idUser + " не является владельцем предмета с id: " + id);
         }
-        itemRepository.deleteItemId(id);
+        itemRepository.deleteById(id);
+        log.info("Предмет удален с id: " + id);
     }
 
     @Override
@@ -91,8 +87,8 @@ public class ItemServiceImpl implements ItemService {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Item> items = itemRepository.searchListItems(idUser, text);
-        log.info("Получение значении с текстом: " + text);
+        List<Item> items = itemRepository.search(text);
+        log.info("Поиск предметов по тексту: " + text);
         return itemMapper.toListItemDto(items);
     }
 
