@@ -79,10 +79,41 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
-    @Override
     public List<ItemDto> getAllItems(Long idUser) {
         checkCreateUser(idUser);
-        return itemMapper.toListItemDto(itemRepository.findAllByOwnerId(idUser));
+        List<Item> items = itemRepository.findAllByOwnerId(idUser);
+        List<ItemDto> itemDtos = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        for (Item item : items) {
+            List<Comment> comments = commentRepository.findByItemId(item.getId());
+            List<Booking> bookings = bookingRepository.findAllByItemIdAndStatus(item.getId(), BookingStatus.APPROVED);
+            Booking lastBooking = null;
+            Booking nextBooking = null;
+            if (!bookings.isEmpty()) {
+                bookings.sort(Comparator.comparing(Booking::getStart));
+
+                for (Booking booking : bookings) {
+                    if (booking.getStart().isBefore(now)) {
+                        lastBooking = booking;
+                    } else if (nextBooking == null) {
+                        nextBooking = booking;
+                        break;
+                    }
+                }
+            }
+            ItemDto itemDto = itemMapper.toItemDto(item);
+            if (lastBooking != null) {
+                itemDto.setLastBooking(bookingMapper.toBookingDto(lastBooking));
+            }
+
+            if (nextBooking != null) {
+                itemDto.setNextBooking(bookingMapper.toBookingDto(nextBooking));
+            }
+
+            itemDto.setComments(commentMapper.toListCommentsDto(comments));
+            itemDtos.add(itemDto);
+        }
+        return itemDtos;
     }
 
     @Override

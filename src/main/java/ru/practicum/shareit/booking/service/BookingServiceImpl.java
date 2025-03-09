@@ -46,6 +46,9 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto getBooking(Long idUser, Long idBooking) {
         checkCreateUser(idUser);
         Booking booking = checkCreateBooking(idBooking);
+        if (!booking.getBooker().getId().equals(idUser) && !booking.getItem().getOwner().getId().equals(idUser)) {
+            throw new ValidationException("Пользователь с id " + idUser + " не имеет доступа к бронированию id " + idBooking);
+        }
         log.info("Найдено бронирование с id: " + booking.getId());
         return bookingMapper.toBookingDto(booking);
     }
@@ -58,18 +61,20 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto approveBooking(Long idUser, Long idBooking, Boolean approve) {
-        checkCreateUserInWrongUser(idUser);
         Booking booking = checkCreateBooking(idBooking);
         Item item = booking.getItem();
+        if (!item.getOwner().getId().equals(idUser)) {
+            throw new ValidationException("Пользователь не является владельцем вещи");
+        }
         if (approve) {
             booking.setStatus(BookingStatus.APPROVED);
             item.setAvailable(false);
             log.info("Добавилось бронирование с id: " + booking.getId());
-            return bookingMapper.toBookingDto(booking);
         } else {
-            log.info("Бронирование с id: " + booking.getId() + " Неподтверждено");
-            return bookingMapper.toBookingDto(booking);
+            booking.setStatus(BookingStatus.REJECTED);
+            log.info("Бронирование с id: " + booking.getId() + " отклонено");
         }
+        return bookingMapper.toBookingDto(booking);
     }
 
     private Booking checkCreateBooking(Long idBooking) {
@@ -79,10 +84,6 @@ public class BookingServiceImpl implements BookingService {
 
     private User checkCreateUser(Long idUser) {
         return userRepository.findById(idUser).orElseThrow(() -> new NotFoundException("Не найден пользователь c id: " + idUser));
-    }
-
-    private User checkCreateUserInWrongUser(Long idUser) {
-        return userRepository.findById(idUser).orElseThrow(() -> new ValidationException("Не найден пользователь c id: " + idUser));
     }
 
     private Item checkCreateItem(Long idItem) {
