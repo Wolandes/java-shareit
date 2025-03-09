@@ -61,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
         checkCreateUserInWrongUser(idUser);
         Booking booking = checkCreateBooking(idBooking);
         Item item = booking.getItem();
-        if (approve = true) {
+        if (approve) {
             booking.setStatus(BookingStatus.APPROVED);
             item.setAvailable(false);
             log.info("Добавилось бронирование с id: " + booking.getId());
