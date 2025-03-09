@@ -57,30 +57,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto approveBooking(Long bookingId, Long ownerId, Boolean approve) {
-        if (approve == null) {
-            throw new IllegalArgumentException("approve не может быть null");
-        }
-
-        Booking booking = checkCreateBooking(bookingId);
-
-        if (!booking.getItem().getOwner().getId().equals(ownerId)) {
-            throw new ValidationException("Только владелец может подтверждать бронирование");
-        }
-
-        if (booking.getStatus() != BookingStatus.WAITING) {
-            throw new IllegalStateException("Бронирование уже подтверждено или отклонено");
-        }
-
-        if (approve) {
+    public BookingDto approveBooking(Long idUser, Long idBooking, Boolean approve) {
+        checkCreateUserInWrongUser(idUser);
+        Booking booking = checkCreateBooking(idBooking);
+        Item item = booking.getItem();
+        if (approve = true) {
             booking.setStatus(BookingStatus.APPROVED);
+            item.setAvailable(false);
+            log.info("Добавилось бронирование с id: " + booking.getId());
+            return bookingMapper.toBookingDto(booking);
         } else {
-            booking.setStatus(BookingStatus.REJECTED);
+            log.info("Бронирование с id: " + booking.getId() + " Неподтверждено");
+            return bookingMapper.toBookingDto(booking);
         }
-
-        bookingRepository.save(booking);
-
-        return bookingMapper.toBookingDto(booking);
     }
 
     private Booking checkCreateBooking(Long idBooking) {
