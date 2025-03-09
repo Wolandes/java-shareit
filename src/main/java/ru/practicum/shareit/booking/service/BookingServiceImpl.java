@@ -62,8 +62,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("approve не может быть null");
         }
 
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+        Booking booking = checkCreateBooking(bookingId);
 
         if (!booking.getItem().getOwner().getId().equals(ownerId)) {
             throw new ValidationException("Только владелец может подтверждать бронирование");
