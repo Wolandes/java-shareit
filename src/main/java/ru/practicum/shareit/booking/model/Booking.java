@@ -36,7 +36,7 @@ public class Booking {
     @Column(nullable = false)
     private LocalDateTime start;
 
-    @Column(nullable = false)
+    @Column(name = "\"end\"", nullable = false)
     private LocalDateTime end;
 
     @Enumerated(EnumType.STRING)

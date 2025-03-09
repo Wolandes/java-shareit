@@ -18,6 +18,16 @@ public class ItemMapper {
         return itemDto;
     }
 
+    public ItemDto toItemDtoWithListComments(Item item, List<CommentDto> commentDtos) {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.getAvailable());
+        itemDto.setComments(commentDtos);
+        return itemDto;
+    }
+
     public Item toItem(ItemDto itemDto) {
         Item item = new Item();
         item.setName(itemDto.getName());

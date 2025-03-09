@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         checkDoubleEmail(user);
         user = userRepository.save(user);
         UserDto userDto = userMapper.toUserDto(user);
-        log.info("Пользователь сохранен с id" + userDto.getId());
+        log.info("Пользователь сохранен с id: " + userDto.getId());
         return userDto;
     }
 
