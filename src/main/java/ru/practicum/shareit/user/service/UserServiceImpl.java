@@ -26,9 +26,9 @@ public class UserServiceImpl implements UserService {
     public UserDto saveUser(UserCreateDto userCreateDto) {
         User user = userMapper.toUserFromUserCreateDto(userCreateDto);
         checkDoubleEmail(user);
-        user = userRepository.saveUser(user);
+        user = userRepository.save(user);
         UserDto userDto = userMapper.toUserDto(user);
-        log.info("Пользователь сохранен с id" + userDto.getId());
+        log.info("Пользователь сохранен с id: " + userDto.getId());
         return userDto;
     }
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = findById(id);
         User user = userMapper.toUserFromUserUpdateDto(updateUser);
         if (updateUser.getName() == null) {
-            user.setName((userDto.getName()));
+            user.setName(userDto.getName());
         }
         if (updateUser.getEmail() == null) {
             user.setEmail(userDto.getEmail());
@@ -66,19 +66,17 @@ public class UserServiceImpl implements UserService {
             checkDoubleEmail(user);
         }
         user.setId(id);
-        userRepository.saveUser(user);
+        userRepository.save(user);
         userDto = userMapper.toUserDto(user);
         log.info("Пользователь обновлен");
         return userDto;
     }
 
     private void checkDoubleEmail(User user) {
-        Set<User> users = userRepository.findSetAllUsers();
-        for (User user1 : users) {
-            if (user.getEmail().equals(user1.getEmail())) {
-                log.info("В мапе не может хранится одинаковые email");
-                throw new DoubleException("В мапе не может хранится одинаковые email");
-            }
+        Set<User> users = userRepository.findByEmail(user.getEmail());
+        if (!users.isEmpty() && users.stream().anyMatch(u -> !u.getId().equals(user.getId()))) {
+            log.info("В базе данных не может храниться одинаковые email");
+            throw new DoubleException("В базе данных не может храниться одинаковые email");
         }
     }
 }
