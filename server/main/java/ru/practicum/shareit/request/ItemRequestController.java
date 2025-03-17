@@ -3,6 +3,8 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -16,7 +18,7 @@ public class ItemRequestController {
     private final ItemRequestService requestService;
 
     @PostMapping
-    public ResponseEntity<ItemRequest> createRequest(@RequestBody ItemRequest request) {
+    public ItemRequestDto createRequest(@RequestBody ItemRequestCreateDto itemRequestCreateDto) {
         return ResponseEntity.ok(requestService.createRequest(request));
     }
 
