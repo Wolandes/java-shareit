@@ -21,4 +21,5 @@ public class ItemDto {
     private BookingDto lastBooking;  // Дто для последнего бронирования
     private BookingDto nextBooking;
     List<CommentDto> comments;
+    Long requestId;
 }
