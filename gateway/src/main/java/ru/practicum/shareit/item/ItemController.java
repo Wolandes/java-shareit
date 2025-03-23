@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.*;
 
-import java.util.Map;
-
 /**
  * Контроллер для работы с вещами.
  */
