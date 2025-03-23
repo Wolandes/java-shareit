@@ -83,14 +83,16 @@ class BookingServiceImplTest {
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         when(bookingMapper.toBookingFromBookingCreate(bookingCreateDto)).thenReturn(booking);
         when(bookingRepository.save(booking)).thenReturn(booking);
-        when(bookingMapper.toBookingDto(booking)).thenReturn(new BookingDto() {{
-            setId(1L);
-            setStart(booking.getStart());
-            setEnd(booking.getEnd());
-            setStatus(booking.getStatus());
-            setItem(item);
-            setBooker(user);
-        }});
+        when(bookingMapper.toBookingDto(booking)).thenReturn(new BookingDto() {
+            {
+                setId(1L);
+                setStart(booking.getStart());
+                setEnd(booking.getEnd());
+                setStatus(booking.getStatus());
+                setItem(item);
+                setBooker(user);
+            }
+        });
 
         BookingDto result = bookingService.createBooking(1L, bookingCreateDto);
 
@@ -106,14 +108,16 @@ class BookingServiceImplTest {
     void getBooking_shouldReturnBookingDto_whenBookingExists() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
-        when(bookingMapper.toBookingDto(booking)).thenReturn(new BookingDto() {{
-            setId(1L);
-            setStart(booking.getStart());
-            setEnd(booking.getEnd());
-            setStatus(booking.getStatus());
-            setItem(item);
-            setBooker(user);
-        }});
+        when(bookingMapper.toBookingDto(booking)).thenReturn(new BookingDto() {
+            {
+                setId(1L);
+                setStart(booking.getStart());
+                setEnd(booking.getEnd());
+                setStatus(booking.getStatus());
+                setItem(item);
+                setBooker(user);
+            }
+        });
 
         BookingDto result = bookingService.getBooking(1L, 1L);
 
