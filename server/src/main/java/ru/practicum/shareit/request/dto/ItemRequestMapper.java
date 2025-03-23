@@ -24,7 +24,7 @@ public class ItemRequestMapper {
         return itemRequest;
     }
 
-    public List<ItemRequestDto> toListItemRequestsDto(List<ItemRequest> itemRequests){
+    public List<ItemRequestDto> toListItemRequestsDto(List<ItemRequest> itemRequests) {
         List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
         for (ItemRequest itemRequest : itemRequests) {
             ItemRequestDto itemRequestDto = toItemRequestDto(itemRequest);
