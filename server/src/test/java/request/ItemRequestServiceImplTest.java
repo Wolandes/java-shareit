@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -97,14 +98,19 @@ public class ItemRequestServiceImplTest {
 
     @Test
     void getOwnRequests_shouldReturnListOfItemRequestDtos() {
-        List<ItemRequest> itemRequests = new ArrayList<>();
-        itemRequests.add(itemRequest);
+        item.setRequest(itemRequest);
 
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
+        List<ItemRequest> itemRequests = Collections.singletonList(itemRequest);
+        List<ItemDto> itemDtos = Collections.singletonList(new ItemDto());
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(itemRequestRepository.findByRequesterIdOrderByCreatedDesc(1L)).thenReturn(itemRequests);
-        when(itemRepository.findByRequestId(itemRequest.getId())).thenReturn(Collections.singletonList(item));
-        when(itemMapper.toItemDto(item)).thenReturn(new ItemDto());
-        when(itemRequestMapper.toItemRequestDto(itemRequest)).thenReturn(itemRequestDto);  // Возвращаем itemRequestDto
+        when(itemRepository.findByRequestIds(Collections.singletonList(itemRequest.getId())))
+                .thenReturn(Collections.singletonList(item));
+        when(itemMapper.toItemDto(item)).thenReturn(itemDtos.get(0));
+        when(itemRequestMapper.toItemRequestDto(itemRequest)).thenReturn(itemRequestDto);
+
+        itemRequestDto.setItems(itemDtos);
 
         List<ItemRequestDto> result = itemRequestService.getOwnRequests(1L);
 
@@ -112,18 +118,24 @@ public class ItemRequestServiceImplTest {
         assertEquals(1, result.size());
         assertEquals(itemRequest.getId(), result.get(0).getId());
         assertEquals(itemRequest.getDescription(), result.get(0).getDescription());
+        assertEquals(1, result.get(0).getItems().size());
     }
 
     @Test
     void getAllRequests_shouldReturnListOfItemRequestDtos() {
-        List<ItemRequest> itemRequests = new ArrayList<>();
-        itemRequests.add(itemRequest);
+        item.setRequest(itemRequest);
 
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
+        List<ItemRequest> itemRequests = Collections.singletonList(itemRequest);
+        List<ItemDto> itemDtos = Collections.singletonList(new ItemDto());
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(itemRequestRepository.findByRequesterIdNotOrderByCreatedDesc(1L)).thenReturn(itemRequests);
-        when(itemRepository.findByRequestId(itemRequest.getId())).thenReturn(Collections.singletonList(item));
-        when(itemMapper.toItemDto(item)).thenReturn(new ItemDto());
-        when(itemRequestMapper.toItemRequestDto(itemRequest)).thenReturn(itemRequestDto);  // Возвращаем itemRequestDto
+        when(itemRepository.findByRequestIds(Collections.singletonList(itemRequest.getId())))
+                .thenReturn(Collections.singletonList(item));
+        when(itemMapper.toItemDto(item)).thenReturn(itemDtos.get(0));
+        when(itemRequestMapper.toItemRequestDto(itemRequest)).thenReturn(itemRequestDto);
+
+        itemRequestDto.setItems(itemDtos);
 
         List<ItemRequestDto> result = itemRequestService.getAllRequests(1L);
 
@@ -131,6 +143,7 @@ public class ItemRequestServiceImplTest {
         assertEquals(1, result.size());
         assertEquals(itemRequest.getId(), result.get(0).getId());
         assertEquals(itemRequest.getDescription(), result.get(0).getDescription());
+        assertEquals(1, result.get(0).getItems().size());
     }
 
     @Test
