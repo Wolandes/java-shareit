@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.*;
 
+import java.util.Collections;
+
 /**
  * Контроллер для работы с вещами.
  */
@@ -58,6 +60,9 @@ public class ItemController {
     public ResponseEntity<Object> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @RequestParam String text) {
         log.info("Поиск вещей с текстом '{}' пользователем id: {}", text, userId);
+        if (text == null || text.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
         return itemClient.searchItems(userId, text);
     }
 

@@ -18,7 +18,9 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -43,41 +45,64 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getOwnRequests(Long userId) {
-        User user = checkCreateUser(userId);
+        checkCreateUser(userId);
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdOrderByCreatedDesc(userId);
-        List<ItemRequestDto> requestDtos = new ArrayList<>();
+        List<Long> requestIds = new ArrayList<>();
         for (ItemRequest request : requests) {
-            List<Item> itemsList = itemRepository.findByRequestId(request.getId());
-            List<ItemDto> items = new ArrayList<>();
-
-            for (Item item : itemsList) {
-                items.add(itemMapper.toItemDto(item));
-            }
-            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(request);
-            itemRequestDto.setItems(items);
-            requestDtos.add(itemRequestDto);
+            requestIds.add(request.getId());
         }
-        return requestDtos;
+        List<Item> items = itemRepository.findByRequestIds(requestIds);
+        Map<Long, List<ItemDto>> itemsByRequestId = new HashMap<>();
+        for (Item item : items) {
+            Long reqId = item.getRequest().getId();
+            if (!itemsByRequestId.containsKey(reqId)) {
+                itemsByRequestId.put(reqId, new ArrayList<ItemDto>());
+            }
+            itemsByRequestId.get(reqId).add(itemMapper.toItemDto(item));
+        }
+        List<ItemRequestDto> result = new ArrayList<>();
+        for (ItemRequest request : requests) {
+            ItemRequestDto dto = itemRequestMapper.toItemRequestDto(request);
+            List<ItemDto> itemDtos = itemsByRequestId.get(request.getId());
+            if (itemDtos == null) {
+                itemDtos = new ArrayList<ItemDto>();
+            }
+            dto.setItems(itemDtos);
+            result.add(dto);
+        }
+        log.info("Получение списка пользователем с id: " + userId);
+        return result;
     }
 
     @Override
     public List<ItemRequestDto> getAllRequests(Long userId) {
-        User user = checkCreateUser(userId);
+        checkCreateUser(userId);
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdNotOrderByCreatedDesc(userId);
-        List<ItemRequestDto> requestDtos = new ArrayList<>();
+        List<Long> requestIds = new ArrayList<>();
         for (ItemRequest request : requests) {
-            List<Item> itemsList = itemRepository.findByRequestId(request.getId());
-            List<ItemDto> items = new ArrayList<>();
-
-            for (Item item : itemsList) {
-                items.add(itemMapper.toItemDto(item));
-            }
-            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(request);
-            itemRequestDto.setItems(items);
-
-            requestDtos.add(itemRequestDto);
+            requestIds.add(request.getId());
         }
-        return requestDtos;
+        List<Item> items = itemRepository.findByRequestIds(requestIds);
+        Map<Long, List<ItemDto>> itemsByRequestId = new HashMap<>();
+        for (Item item : items) {
+            Long reqId = item.getRequest().getId();
+            if (!itemsByRequestId.containsKey(reqId)) {
+                itemsByRequestId.put(reqId, new ArrayList<ItemDto>());
+            }
+            itemsByRequestId.get(reqId).add(itemMapper.toItemDto(item));
+        }
+        List<ItemRequestDto> result = new ArrayList<>();
+        for (ItemRequest request : requests) {
+            ItemRequestDto dto = itemRequestMapper.toItemRequestDto(request);
+            List<ItemDto> itemDtos = itemsByRequestId.get(request.getId());
+            if (itemDtos == null) {
+                itemDtos = new ArrayList<ItemDto>();
+            }
+            dto.setItems(itemDtos);
+            result.add(dto);
+        }
+        log.info("Получение списка пользователем с id: " + userId);
+        return result;
     }
 
     @Override

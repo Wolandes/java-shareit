@@ -1,6 +1,5 @@
 package user;
 
-
 import ru.practicum.shareit.user.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
